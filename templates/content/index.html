@@ -1,4 +1,64 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>List</h1>
+<div class="container mt-3">
+    <div class="row">
+        <div class="col-md-10">
+            <nav style="--bs-breadcrumb-divider: '-';" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item"><a href="">Tracker</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">My Data</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="col-md-2">
+            <a href="{% url 'add' %}" 
+   class="btn" 
+   style="text-decoration: none; color: #0d6efd; padding: 1px 5px; background: none; border: 2px solid #0d6efd; display: inline-block; transition: background-color 0.3s, color 0.3s;" 
+   onmouseover="this.style.backgroundColor='#0d6efd'; this.style.color='white';" 
+   onmouseout="this.style.backgroundColor='white'; this.style.color='#0d6efd';">
+   Add Data
+</a>
+        </div>
+    </div>
+    {% include "partials/messages.html" %}
+    <div class="container">
+        {% if content.count %}
+        <table class="table table-stripped table-hover">
+            <thead>
+                <tr>
+                    <th>
+                        Amount (Currency)
+                    </th>
+                    <th>
+                        Category
+                    </th>
+                    <th>
+                        Description
+                    </th>
+                    <th>
+                        Head
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for single in content %}
+                <tr>
+                    <td>{{single.amount}}</td>
+                    <td>{{single.category}}</td>
+                    <td>{{single.description}}</td>
+                    <td>{{single.date}}</td>
+                    <td><a href="{% url 'content-edit' single.id %}" class="btn"
+                        style="text-decoration: none; color: #0d6efd; padding: 1px 5px; background: none; border: 2px solid #0d6efd; display: inline-block; transition: background-color 0.3s, color 0.3s;" 
+                        onmouseover="this.style.backgroundColor='#0d6efd'; this.style.color='white';" 
+                        onmouseout="this.style.backgroundColor='white'; this.style.color='#0d6efd';">Edit</a></td>
+                </tr>
+                {% endfor %}
+                
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
+</div>
+
 {% endblock content %}

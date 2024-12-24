@@ -1,18 +1,31 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="container mt-3">
-    <nav style="--bs-breadcrumb-divider: '-';" aria-label="breadcrumb">
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="{%url 'content'%}">Tracker</a></li>
-          <li class="breadcrumb-item active" aria-current="page">New Data</li>
-        </ol>
-      </nav>
+    <div class="row">
+        <div class="col-md-10">
+            <nav style="--bs-breadcrumb-divider: '-';" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item"><a href="{%url 'content'%}">Tracker</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">Edit Data</li>
+                </ol>
+              </nav>
+        </div>
+        <div class="col-md-2">
+            <a href="{% url 'content-delete' content.id %}" 
+   class="btn" 
+   style="text-decoration: none; color:#d11a1b ; padding: 1px 5px; background: none; border: 2px solid #d11a1b ; display: inline-block; transition: background-color 0.3s, color 0.3s;" 
+   onmouseover="this.style.backgroundColor='#d11a1b '; this.style.color='white';" 
+   onmouseout="this.style.backgroundColor='white'; this.style.color='#d11a1b ';">
+   Delete Data
+</a>
+        </div>
+    </div>
       {% include "partials/messages.html" %}
         <div class="card mt-3">
-            <form action="{% url "add" %}" method="post">
+            <form action="{% url "content-edit" content.id %}" method="post">
                 {% csrf_token %}
             <div class="card-header fw-bold">
-              Add Data
+              Edit Data
             </div>
             <div class="card-body">
                 <div class="mb-3">
@@ -26,7 +39,7 @@
                   <div class="mb-3">
                     <label for="" class="form-label">Category</label>
                     <select name="category" class="form-control" required>
-                        <option value="" name="category" selected>Select</option>
+                        <option value="{{values.category}}" name="category" selected>{{values.category}}</option>
                         {% for category in categories %}
                         <option value="{{category.name}}" name="category">{{category.name}}</option>
                         {% endfor %}
@@ -38,7 +51,7 @@
                   </div>
             </div>
             <div class="card-footer text-body-secondary text-center">
-                <input type="submit" value="Submit" class="btn btn-primary"></input>
+                <input type="submit" value="Save" class="btn btn-primary"></input>
             </div>
             </form>
         </div>

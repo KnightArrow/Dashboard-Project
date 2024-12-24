@@ -14,7 +14,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link d-flex align-items-center gap-2" href="#">
+            <a class="nav-link d-flex align-items-center gap-2" href="{% url "content" %}">
               <svg class="bi"><use xlink:href="#file-earmark"/></svg>
               Expenses
             </a>
@@ -46,12 +46,17 @@
               Income Summary
             </a>
           </li>
-        
         </ul>
 
         <hr class="my-3">
 
         <ul class="nav flex-column mb-auto">
+          <li class="nav-item">
+            <a class="nav-link d-flex align-items-center gap-2" href="{% url "currencies" %}">
+              <svg class="bi"><use xlink:href="#graph-up"/></svg>
+              Change
+            </a>
+          </li>
           <li class="nav-item">
             <a class="nav-link d-flex align-items-center gap-2" href="#">
               <svg class="bi"><use xlink:href="#gear-wide-connected"/></svg>
@@ -60,8 +65,17 @@
           </li>
           <li class="nav-item">
             <a class="nav-link d-flex align-items-center gap-2" href="#">
+              <svg class="bi"><use xlink:href="#people"/></svg>
+              Account
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link d-flex align-items-center gap-2" href="#">
               <svg class="bi"><use xlink:href="#door-closed"/></svg>
-              Sign out
+              <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                {% csrf_token %}
+                <input class="text" type="submit" value="Sign out" style="border: none; background: none; color: inherit; font: inherit; cursor: pointer; text-decoration: none; padding: 0;margin-top:13px;"/>
+              </form>
             </a>
           </li>
         </ul>
