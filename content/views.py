@@ -3,16 +3,33 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
 from .models import Category,Content
 from django.contrib import messages
+from django.core.paginator import Paginator
+import json
+from django.http import JsonResponse
 
 @never_cache    #avoids caching and prevents opening webpage after clicking back button
 @login_required(login_url='/authentication/login')
 def index(request):
     categories=Category.objects.all()
     content=Content.objects.filter(owner=request.user)
+    paginator=Paginator(content,2,error_messages={"no_results": "Page does not exist"}) #. Available error message keys are: invalid_page, min_page, and no_results.
+    #orphans (default: 0): The minimum number of items allowed on the last page. If the number of items on the last page is less than orphans, they are included on the previous page instead.
+    #Example: Paginator(queryset, 10, orphans=3).
+    #Example: Paginator(queryset, 10, allow_empty_first_page=False).
+    page_number=request.GET.get('page')
+    page_obj=paginator.get_page(page_number) #or could be Paginator.get_page(paginator,page_number)
     context={
-        "content":content
+        "content":content,
+        'page_obj':page_obj
     }
     return render(request,'content/index.html',context)
+
+def search_content(request):
+    if request.method=="POST":
+        search_query=json.loads(request.body).get('searchText')
+        content=Content.objects.filter(amount__istartswith=search_query,owner=request.user) | Content.objects.filter(date__istartswith=search_query,owner=request.user) | Content.objects.filter(description__icontains=search_query,owner=request.user) | Content.objects.filter(category__icontains=search_query,owner=request.user)
+        data=content.values()
+        return JsonResponse(list(data),safe=False)
 
 def add(request):
     categories=Category.objects.all()
