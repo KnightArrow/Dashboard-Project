@@ -22,4 +22,5 @@ urlpatterns = [
     path('',include('content.urls')),
     path('authentication/',include('authentication.urls')),
     path('currencies/',include('currencies.urls')),
+    path('content1/',include('content1.urls')),
 ]

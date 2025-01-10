@@ -3,13 +3,13 @@
 <div class="container mt-3">
     <nav style="--bs-breadcrumb-divider: '-';" aria-label="breadcrumb">
         <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="{%url 'content'%}">Tracker</a></li>
-          <li class="breadcrumb-item active" aria-current="page">New Data</li>
+          <li class="breadcrumb-item"><a href="{%url 'content1'%}">Data-1</a></li>
+          <li class="breadcrumb-item active" aria-current="page">New Data-1</li>
         </ol>
       </nav>
       {% include "partials/messages.html" %}
         <div class="card mt-3">
-            <form action="{% url "add" %}" method="post">
+            <form action="{% url "add-content1" %}" method="post">
                 {% csrf_token %}
             <div class="card-header fw-bold">
               Add Data
@@ -24,17 +24,17 @@
                     <input type="text" class="form-control" id="descriptionInput" name="description" value="{{values.description}}">
                   </div>
                   <div class="mb-3">
-                    <label for="" class="form-label">Category</label>
-                    <select name="category" class="form-control" required>
-                        <option value="" name="category" selected>Select</option>
-                        {% for category in categories %}
-                        <option value="{{category.name}}" name="category">{{category.name}}</option>
+                    <label for="" class="form-label">Source</label>
+                    <select name="source" class="form-control" required>
+                        <option value="" name="source" selected>Select</option>
+                        {% for source in sources %}
+                        <option value="{{source.name}}" name="source">{{source.name}}</option>
                         {% endfor %}
                     </select>
                   </div>
                   <div class="mb-3">
                     <label for="" class="form-label">Date</label>
-                    <input type="date" class="form-control" value="{% now "Y-m-d" %}" id="dateInput" name="date"> <!-- To pre-enter the date in form. -->
+                    <input type="date" class="form-control" value="{% now "Y-m-d" %}" id="dateInput" name="content1_date"> <!-- To pre-enter the date in form. -->
                   </div>
             </div>
             <div class="card-footer text-body-secondary text-center">

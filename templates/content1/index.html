@@ -6,20 +6,20 @@
         <div class="col-md-9">
             <nav style="--bs-breadcrumb-divider: '-';" aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                  <li class="breadcrumb-item"><a href="">Tracker</a></li>
-                  <li class="breadcrumb-item active" aria-current="page">My Data</li>
+                  <li class="breadcrumb-item"><a href="">Data-1</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">My Data-1</li>
                 </ol>
             </nav>
         </div>
         <div class="col-md-3">
-            <a href="{% url 'export-excel' %}" 
+            <a href="{% url 'export-excel-content1' %}" 
    class="btn" 
    style="text-decoration: none; color: #4CAF50; padding: 1px 5px; background: none; border: 2px solid #4CAF50; display: inline-block; transition: background-color 0.3s, color 0.3s;" 
    onmouseover="this.style.backgroundColor='#4CAF50'; this.style.color='white';" 
    onmouseout="this.style.backgroundColor='white'; this.style.color='#4CAF50';">
    Export Excel 
 </a>
-            <a href="{% url 'export-csv' %}" 
+            <a href="{% url 'export-csv-content1' %}" 
    class="btn" 
    style="text-decoration: none; color: #4CAF50; padding: 1px 5px; background: none; border: 2px solid #4CAF50; display: inline-block; transition: background-color 0.3s, color 0.3s;" 
    onmouseover="this.style.backgroundColor='#4CAF50'; this.style.color='white';" 
@@ -45,7 +45,7 @@
         <div class="col-md-8"></div>
     </div>
     <div class="container">
-        {% if content.count %}
+        {% if content1.count %}
         <div class="app-table">
             <table class="table table-stripped table-hover">
                 <thead>
@@ -54,7 +54,7 @@
                             Amount ({{currency}})
                         </th>
                         <th>
-                            Category
+                            Source
                         </th>
                         <th>
                             Description
@@ -69,10 +69,10 @@
                     {% for single in page_obj %}
                     <tr>
                         <td>{{single.amount}}</td>
-                        <td>{{single.category}}</td>
+                        <td>{{single.source}}</td>
                         <td>{{single.description}}</td>
                         <td>{{single.date}}</td>
-                        <td><a href="{% url 'content-edit' single.id %}" class="btn"
+                        <td><a href="{% url 'content1-edit' single.id %}" class="btn"
                             style="text-decoration: none; color: #0d6efd; padding: 1px 5px; background: none; border: 2px solid #0d6efd; display: inline-block; transition: background-color 0.3s, color 0.3s;" 
                             onmouseover="this.style.backgroundColor='#0d6efd'; this.style.color='white';" 
                             onmouseout="this.style.backgroundColor='white'; this.style.color='#0d6efd';">Edit</a></td>
@@ -135,7 +135,7 @@
         {% endif %}
     </div>
 </div>
-<script src="{% static "js/searchContent.js" %}">
+<script src="{% static "js/searchContent1.js" %}">
 
 </script>
 {% endblock content %}
