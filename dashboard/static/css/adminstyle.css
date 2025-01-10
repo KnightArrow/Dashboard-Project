@@ -1,0 +1,28 @@
+ #header {
+    background: black;
+    color: var(--header-bg);
+    border-bottom: 1px solid white;
+}
+#head{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    height: auto;
+}
+#head img {
+    margin-right: 10px;
+    vertical-align: middle;
+    max-height: 35px;
+    max-width: auto;
+}
+div.breadcrumbs{
+    background: black;
+    color: var(--header-bg);
+}
+.submit-row>input{
+    width:100%;
+}
+.module h2, .module caption, .inline-group h2{
+    background: grey;
+}

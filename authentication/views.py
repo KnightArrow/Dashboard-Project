@@ -12,7 +12,15 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
 from .utils import token_generator
 from django.contrib.auth import login,logout,authenticate
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+import threading
 
+class EmailThread(threading.Thread):
+    def __init__(self,email):
+        self.email=email
+        threading.Thread.__init__(self)
+    def run(self):
+        self.email.send(fail_silently=False)
 class UsernameValidationView(View):
     def post(self,request):
         data=json.loads(request.body)
@@ -57,7 +65,7 @@ class RegistrationView(View):
                 activate_url='http://'+domain+link
                 email_body='Hi '+user.username+' Use link to activate your account\n\n'+activate_url
                 email = EmailMessage( email_subject,email_body,"noreply@semycolon.com",[email])
-                email.send(fail_silently=False)
+                EmailThread(email).start()
                 messages.success(request,"Account Created Successfully")        #Success Message
         return render(request,'authentication/register.html')
 
@@ -106,3 +114,65 @@ class LogoutView(View):
         logout(request)
         messages.success(request,"You have been logged out")
         return redirect('login')
+    
+class RequestPasswordResetEmail(View):
+    def get(self,request):
+        return render(request,'authentication/reset-password.html')
+    def post(self,request):
+        email=request.POST['email']
+        context={"values":request.POST}
+        if not validate_email(email):
+            messages.error(request,"Please enter registered email address.",context)
+            return render(request,'authentication/reset-password.html')
+        email_subject='Password Reset'
+        user=User.objects.filter(email=email)
+        if user.exists():
+            uidb64=urlsafe_base64_encode(force_bytes(user[0].pk))
+            domain=get_current_site(request).domain
+            link=reverse('reset-password-link',kwargs={'uidb64':uidb64,'token':PasswordResetTokenGenerator().make_token(user[0])})
+            reset_url='http://'+domain+link
+            email_body='Hi '+user[0].username+' Click the below link to reset your password.\n\n'+reset_url
+            email = EmailMessage( email_subject,email_body,"noreply@semycolon.com",[email])
+            EmailThread(email).start()
+        messages.success(request,"Check you registered email address.")
+        return render(request,'authentication/reset-password.html')
+
+class CompletePasswordReset(View):
+    def get(self,request,uidb64,token):
+        context={
+            'uidb64':uidb64,
+            'token':token
+        }
+        try:
+            id=force_str(urlsafe_base64_decode(uidb64))
+            user=User.objects.get(id=id)
+            if not PasswordResetTokenGenerator().check_token(user,token):
+                messages.error(request,"Invalid link")
+                return render(request,'authentication/reset-password.html')
+        except Exception as e:
+            pass
+        return render(request,'authentication/set-newpassword.html',context)
+    def post(self,request,uidb64,token):
+        context={
+            'uidb64':uidb64,
+            'token':token
+        }
+        password=request.POST['password']
+        password1=request.POST['password1']
+        if password!=password1:
+            messages.error(request,"Passwords do not match.")
+            return render(request,'authentication/set-newpassword.html',context)
+        if len(password)<6:
+            messages.error(request,"Password should be at least 6 characters long.")
+            return render(request,'authentication/set-newpassword.html',context)
+        try:
+            id=force_str(urlsafe_base64_decode(uidb64))
+            user=User.objects.get(id=id)
+            user.set_password(password) #This method is used to hash the password before saving it into the database. It ensures that the password is not stored in plain text but rather as a securely hashed value.
+            user.save() #For other fields in the model (such as email, username, first_name, or any custom field you've defined), you simply assign the value directly without any special methods.
+            messages.success(request,"Password changed successfully")
+            return redirect('login')
+        except Exception as e:
+            messages.info(request,"Something is wrong.")
+            return render(request,'authentication/set-newpassword.html',context)
+        

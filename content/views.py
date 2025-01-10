@@ -5,7 +5,10 @@ from .models import Category,Content
 from django.contrib import messages
 from django.core.paginator import Paginator
 import json
-from django.http import JsonResponse
+from django.http import JsonResponse,HttpResponse
+from currencies.models import Currencies
+import datetime,csv
+import xlwt
 
 @never_cache    #avoids caching and prevents opening webpage after clicking back button
 @login_required(login_url='/authentication/login')
@@ -18,19 +21,23 @@ def index(request):
     #Example: Paginator(queryset, 10, allow_empty_first_page=False).
     page_number=request.GET.get('page')
     page_obj=paginator.get_page(page_number) #or could be Paginator.get_page(paginator,page_number)
+    currency=Currencies.objects.get(user=request.user).currency
     context={
         "content":content,
-        'page_obj':page_obj
+        'page_obj':page_obj,
+        'currency':currency
     }
     return render(request,'content/index.html',context)
 
 def search_content(request):
     if request.method=="POST":
-        search_query=json.loads(request.body).get('searchText')
+        decoded_data = (request.body).decode('utf-8')
+        search_query=json.loads(decoded_data).get('searchText')
         content=Content.objects.filter(amount__istartswith=search_query,owner=request.user) | Content.objects.filter(date__istartswith=search_query,owner=request.user) | Content.objects.filter(description__icontains=search_query,owner=request.user) | Content.objects.filter(category__icontains=search_query,owner=request.user)
         data=content.values()
         return JsonResponse(list(data),safe=False)
 
+@login_required(login_url='/authentication/login')
 def add(request):
     categories=Category.objects.all()
     context={'categories':categories,'values':request.POST}
@@ -48,6 +55,7 @@ def add(request):
         messages.success(request,"Data added successfully")
         return redirect('content')
 
+@login_required(login_url='/authentication/login')
 def content_edit(request,id):
     content=Content.objects.get(id=id)
     categories=Category.objects.all()
@@ -75,9 +83,65 @@ def content_edit(request,id):
         messages.success(request,"Data updated successfully")
         return redirect('content')
 
+@login_required(login_url='/authentication/login')
 def content_delete(request,id):    #Add confirmation model before deleting..
     content=Content.objects.get(pk=id)
     content.delete()
     messages.success(request,"Data has been removed")
     return redirect('content')
 
+# Chat.js 
+@login_required(login_url='/authentication/login')
+def content_summary_by_category(request):
+    todays_date=datetime.date.today()
+    last_six_months=todays_date-datetime.timedelta(days=30*6)
+    contents=Content.objects.filter(owner=request.user,date__gte=last_six_months,date__lte=todays_date)
+    context={}
+    def get_category(content):
+        return content.category
+    category_list=list(set(map(get_category,contents)))
+    def get_category_aggregate(category):
+        amount=0
+        filtered_by_category=contents.filter(category=category)
+        for item in filtered_by_category:
+            amount+=item.amount
+        return amount
+    for content in contents:
+        for category in category_list:
+            context[category]=get_category_aggregate(category)
+    return JsonResponse({'content_category_data':context},safe=False)
+
+def stas_view(request):
+    return render(request,'content/stats.html')
+
+#CSV Export
+def export_csv(request):
+    response=HttpResponse(content_type='text/csv')
+    response['Content-Disposition']='attachment; fileName=Content'+str(datetime.datetime.now())+'.csv'
+    writer=csv.writer(response)
+    writer.writerow(['Amount','Date','Category','Description'])
+    contents=Content.objects.filter(owner=request.user)
+    for content in contents:
+        writer.writerow([content.amount,content.date,content.category,content.description])
+    return response
+
+#Excel Export
+def export_excel(request):
+    response=HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition']='attachment; fileName=Content'+str(datetime.datetime.now())+'.xls'
+    wb=xlwt.Workbook(encoding='utf-8')
+    ws=wb.add_sheet('Content')
+    row_num=0
+    font_style=xlwt.XFStyle()
+    font_style.font.bold=True
+    columns=['Amount','Date','Category','Description']
+    for col_num in range(len(columns)):
+        ws.write(row_num,col_num,columns[col_num],font_style)
+    font_style=xlwt.XFStyle()
+    rows=Content.objects.filter(owner=request.user).values_list('amount','date','category','description')
+    for row in rows:
+        row_num+=1
+        for col_num in range(len(row)):
+            ws.write(row_num,col_num,str(row[col_num]),font_style)
+    wb.save(response)
+    return response

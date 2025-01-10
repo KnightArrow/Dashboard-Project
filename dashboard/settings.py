@@ -35,6 +35,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'content',
+    'content1',
     'authentication',
     'currencies',
     'django.contrib.admin',

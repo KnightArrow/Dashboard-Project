@@ -16,13 +16,13 @@
           <li class="nav-item">
             <a class="nav-link d-flex align-items-center gap-2" href="{% url "content" %}">
               <svg class="bi"><use xlink:href="#file-earmark"/></svg>
-              Expenses
+              Content
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link d-flex align-items-center gap-2" href="#">
+            <a class="nav-link d-flex align-items-center gap-2" href="{% url "content1" %}">
               <svg class="bi"><use xlink:href="#cart"/></svg>
-              Income
+              Content1
             </a>
           </li>
         </ul>
@@ -35,15 +35,15 @@
         </h6>
         <ul class="nav flex-column mb-auto">
           <li class="nav-item">
-            <a class="nav-link d-flex align-items-center gap-2" href="#">
+            <a class="nav-link d-flex align-items-center gap-2" href="{% url "stats" %}">
               <svg class="bi"><use xlink:href="#file-earmark-text"/></svg>
-              Expenses Summary
+              Content
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link d-flex align-items-center gap-2" href="#">
+            <a class="nav-link d-flex align-items-center gap-2" href="{% url "content1stats" %}">
               <svg class="bi"><use xlink:href="#file-earmark-text"/></svg>
-              Income Summary
+              Content1
             </a>
           </li>
         </ul>
@@ -75,6 +75,7 @@
               <form action="{% url 'logout' %}" method="post" style="display: inline;">
                 {% csrf_token %}
                 <input class="text" type="submit" value="Sign out" style="border: none; background: none; color: inherit; font: inherit; cursor: pointer; text-decoration: none; padding: 0;margin-top:13px;"/>
+                ({{request.user.username}})
               </form>
             </a>
           </li>

@@ -5,24 +5,24 @@
         <div class="col-md-10">
             <nav style="--bs-breadcrumb-divider: '-';" aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                  <li class="breadcrumb-item"><a href="{%url 'content'%}">Tracker</a></li>
-                  <li class="breadcrumb-item active" aria-current="page">Edit Data</li>
+                  <li class="breadcrumb-item"><a href="{%url 'content'%}">Data-1</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">Edit Data-1</li>
                 </ol>
               </nav>
         </div>
         <div class="col-md-2">
-            <a href="{% url 'content-delete' content.id %}" 
+            <a href="{% url 'content1-delete' content1.id %}" 
    class="btn" 
    style="text-decoration: none; color:#d11a1b ; padding: 1px 5px; background: none; border: 2px solid #d11a1b ; display: inline-block; transition: background-color 0.3s, color 0.3s;" 
    onmouseover="this.style.backgroundColor='#d11a1b '; this.style.color='white';" 
    onmouseout="this.style.backgroundColor='white'; this.style.color='#d11a1b ';">
-   Delete Data
+   Delete Data-1
 </a>
         </div>
     </div>
       {% include "partials/messages.html" %}
         <div class="card mt-3">
-            <form action="{% url "content-edit" content.id %}" method="post">
+            <form action="{% url "content1-edit" content1.id %}" method="post">
                 {% csrf_token %}
             <div class="card-header fw-bold">
               Edit Data
@@ -37,11 +37,11 @@
                     <input type="text" class="form-control" id="descriptionInput" name="description" value="{{values.description}}">
                   </div>
                   <div class="mb-3">
-                    <label for="" class="form-label">Category</label>
-                    <select name="category" class="form-control" required>
-                        <option value="{{values.category}}" name="category" selected>{{values.category}}</option>
-                        {% for category in categories %}
-                        <option value="{{category.name}}" name="category">{{category.name}}</option>
+                    <label for="" class="form-label">Source</label>
+                    <select name="source" class="form-control" required>
+                        <option value="{{values.source}}" name="source" selected>{{values.source}}</option>
+                        {% for source in sources %}
+                        <option value="{{source.name}}" name="source">{{source.name}}</option>
                         {% endfor %}
                     </select>
                   </div>

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="container mt-3">
+    <div class="row">
+        <div class="col-md-10">
+            <nav style="--bs-breadcrumb-divider: '-';" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item"><a href="">Content Summary</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">Summary</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="col-md-2">
+            <a href="{% url 'content' %}" 
+   class="btn" 
+   style="text-decoration: none; color: #0d6efd; padding: 1px 5px; background: none; border: 2px solid #0d6efd; display: inline-block; transition: background-color 0.3s, color 0.3s;" 
+   onmouseover="this.style.backgroundColor='#0d6efd'; this.style.color='white';" 
+   onmouseout="this.style.backgroundColor='white'; this.style.color='#0d6efd';">
+   Back
+</a>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row mb-3">
+        <div style="height:80vh;width:80vw;"><canvas id="myChart2"></canvas></div>
+    </div><hr>
+    <div class="row">
+        <div class="col-md-6" style="height:80vh;">
+            <canvas id="myChart"></canvas>
+        </div>
+        <div class="col-md-6" style="height:80vh;">
+            <canvas id="myChart1"></canvas>
+        </div>
+    </div>
+</div>
+<script src="{% static "js/stats.js" %}"></script>
+{% endblock content %}
