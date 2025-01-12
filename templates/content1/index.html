@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container mt-3">
     <div class="row">
-        <div class="col-md-9">
+        <div class="col-md-8">
             <nav style="--bs-breadcrumb-divider: '-';" aria-label="breadcrumb">
                 <ol class="breadcrumb">
                   <li class="breadcrumb-item"><a href="">Data-1</a></li>
@@ -11,7 +11,14 @@
                 </ol>
             </nav>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-4">
+            <a href="{% url 'export-pdf-content1' %}" 
+   class="btn" 
+   style="text-decoration: none; color: #FF0000; padding: 1px 5px; background: none; border: 2px solid #FF0000; display: inline-block; transition: background-color 0.3s, color 0.3s;" 
+   onmouseover="this.style.backgroundColor='#FF0000'; this.style.color='white';" 
+   onmouseout="this.style.backgroundColor='white'; this.style.color='#FF0000';">
+   Export PDF 
+</a>
             <a href="{% url 'export-excel-content1' %}" 
    class="btn" 
    style="text-decoration: none; color: #4CAF50; padding: 1px 5px; background: none; border: 2px solid #4CAF50; display: inline-block; transition: background-color 0.3s, color 0.3s;" 
@@ -26,7 +33,7 @@
    onmouseout="this.style.backgroundColor='white'; this.style.color='#4CAF50';">
    Export CSV 
 </a>
-            <a href="{% url 'add' %}" 
+            <a href="{% url 'add-content1' %}" 
    class="btn" 
    style="text-decoration: none; color: #0d6efd; padding: 1px 5px; background: none; border: 2px solid #0d6efd; display: inline-block; transition: background-color 0.3s, color 0.3s;" 
    onmouseover="this.style.backgroundColor='#0d6efd'; this.style.color='white';" 

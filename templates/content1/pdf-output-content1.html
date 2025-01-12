@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Output</title>
+    <style>
+        @page{
+            size:"A4";
+            margin: 2.5cm 1.5cm 3.5cm 1.5cm;
+            @top-center{
+                content:"DashboardX";
+            }
+            @bottom-right{
+                content:"Page" counter(page) "of" counter(pages);
+            }
+        }
+    </style>
+</head>
+<body>
+    <img src="dashboard\dashboard\static\img\logo.avif">
+    <h2>Content1 List</h2>
+    <table class="table">
+        <thead class="thead">
+            <tr>
+                <th>Sr.No.</th>
+                <th>Amount</th>
+                <th>Description</th>
+                <th>Source</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for content in contents %}
+            <tr>
+                <td>{{forloop.counter}}</td>
+                <td>{{content.amount}}</td>
+                <td>{{content.description}}</td>
+                <td>{{content.source}}</td>
+                <td>{{content.date}}</td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td>Total</td>
+                <td>{{total}}</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

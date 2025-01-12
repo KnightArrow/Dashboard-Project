@@ -9,6 +9,11 @@ import json
 from django.http import JsonResponse,HttpResponse
 import datetime,csv
 import xlwt
+from django.template.loader import render_to_string
+from weasyprint import HTML
+import tempfile
+from django.db.models import Sum
+import os
 
 @never_cache
 @login_required(login_url='/authentication/login')
@@ -142,4 +147,25 @@ def export_excel(request):
         for col_num in range(len(row)):
             ws.write(row_num,col_num,str(row[col_num]),font_style)
     wb.save(response)
+    return response
+
+
+#PDF Export
+def export_pdf(request):
+    response = HttpResponse(content_type='application/pdf')
+    timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    response['Content-Disposition'] = f'inline;attachment; filename=Content1_{timestamp}.pdf'
+    response['Content-Transfer-Encoding'] = 'binary'
+    contents=Content1.objects.filter(owner=request.user)
+    sum=contents.aggregate(Sum('amount'))
+    html_string = render_to_string('content1/pdf-output-content1.html', {'contents': contents, 'total': sum['amount__sum']})
+    html = HTML(string=html_string)
+    pdf_content = html.write_pdf()
+    with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as output:
+        output.write(pdf_content)
+        temp_file_path = output.name
+    with open(temp_file_path, 'rb') as pdf_file:
+        response.write(pdf_file.read())
+    os.remove(temp_file_path)
+
     return response
