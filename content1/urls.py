@@ -12,4 +12,5 @@ urlpatterns = [
     path("stats",views.stas_view,name="content1stats"),
     path("export-csv",views.export_csv,name="export-csv-content1"),
     path("export-excel",views.export_excel,name="export-excel-content1"),
+    path("export-pdf",views.export_pdf,name="export-pdf-content1"), 
 ]
